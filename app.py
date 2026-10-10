@@ -8,7 +8,23 @@ from ai.recommendation import recommend_hospitals
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DATABASE = BASE_DIR / "database" / "hospitals.db"
+
+
+def resolve_database_path() -> Path:
+    env_database = os.environ.get("HOSPITAL_FINDER_DATABASE")
+    if env_database:
+        return Path(env_database)
+
+    project_database = BASE_DIR / "database" / "hospitals.db"
+    if os.access(BASE_DIR, os.W_OK):
+        return project_database
+
+    cache_dir = Path("/tmp") / "hospital-finder"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    return cache_dir / "hospitals.db"
+
+
+DATABASE = resolve_database_path()
 CHANDIGARH_HOSPITALS = [
     ("Abhilasha Hospital", "Sector 35", "General care", 30.7279522, 76.7594992),
     ("Air Force Hospital", "Sector 31", "General care", 30.7033952, 76.7775151),
