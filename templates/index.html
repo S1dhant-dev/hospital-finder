@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f8f7">
+  <title>Hospital Finder | Find trusted care near you</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/location.js') }}" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="Hospital Finder home">
+      <span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="{{ url_for('index') }}">Find a hospital</a>
+      <a href="#featured">Featured hospitals</a>
+    </nav>
+    <a class="header-action" href="#search">Explore care <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> CARE THAT'S CLOSER</p>
+        <h1>Find the right care.<br><span>Feel better sooner.</span></h1>
+        <p class="hero-description">Browse hospital listings across Chandigarh and Zirakpur, compare locations, and find care that fits your needs.</p>
+        <div class="trust-row"><span class="trust-icon">✓</span> Explore nearby hospitals by name and specialty</div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="art-cross">+</div>
+        <div class="art-card"><span class="art-card-icon">✚</span><span><strong>Care, made simple</strong><small>Your next step starts here</small></span><span class="art-check">✓</span></div>
+        <span class="art-sparkle sparkle-one">✳</span><span class="art-sparkle sparkle-two">✦</span>
+      </div>
+    </section>
+
+    <section class="search-wrap" id="search" aria-labelledby="search-title">
+      <div class="search-heading">
+        <div><p class="eyebrow">YOUR CARE, YOUR WAY</p><h2 id="search-title">What are you looking for?</h2></div>
+        <p>Search by hospital name or specialty in Chandigarh and Zirakpur</p>
+      </div>
+      <form class="search-form" id="hospital-search" action="{{ url_for('search') }}" method="get">
+        <label class="field field-wide"><span class="field-icon" aria-hidden="true">⌕</span><span class="sr-only">Hospital or keyword</span><input type="search" name="q" placeholder="Hospital name or keyword"></label>
+        <div class="field" aria-label="Included cities"><span class="field-icon" aria-hidden="true">⌖</span><span class="field-value">Chandigarh &amp; Zirakpur</span></div>
+        <label class="field"><span class="sr-only">Specialty</span><span class="field-icon" aria-hidden="true">♡</span><select name="specialty"><option value="">Any specialty</option>{% for specialty in specialties %}<option value="{{ specialty }}">{{ specialty }}</option>{% endfor %}</select></label>
+        <input type="hidden" name="lat" id="user-lat"><input type="hidden" name="lon" id="user-lon">
+        <button class="button button-primary search-button" type="submit">Find hospitals <span aria-hidden="true">→</span></button>
+      </form>
+      <div class="search-options">
+        <label class="check-option"><input type="checkbox" name="emergency" value="1" form="hospital-search"> Show 24/7 emergency care</label>
+        <button class="text-button" type="button" id="use-location"><span aria-hidden="true">◎</span> Use my current location</button>
+        <span class="location-status" id="location-status" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+
+    <section class="featured-section" id="featured">
+      <div class="section-heading">
+        <div><p class="eyebrow">TRICITY DIRECTORY</p><h2>Chandigarh &amp; Zirakpur hospitals</h2></div>
+        <a class="text-link" href="{{ url_for('search') }}">See directory <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="hospital-grid">
+        {% for hospital in featured %}
+        <article class="hospital-card">
+          <div class="card-top"><span class="hospital-icon" aria-hidden="true">✚</span></div>
+          <p class="card-city">{{ hospital["city"] }}</p>
+          <h3><a href="{{ url_for('hospital_detail', hospital_id=hospital['id']) }}">{{ hospital["name"] }}</a></h3>
+          <p class="card-specialties">{{ hospital["specialties"] }}</p>
+          <p class="hospital-description">Located at {{ hospital["address"] }}. Contact the hospital to confirm current services.</p>
+          <a class="card-link" href="{{ url_for('hospital_detail', hospital_id=hospital['id']) }}">View hospital <span aria-hidden="true">↗</span></a>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="directory-note">Directory listings are sourced from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> and may not include every facility. Confirm services and contact details directly with each hospital.</p>
+    </section>
+  </main>
+  <footer class="site-footer"><a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span></a><p>Helping you take the next step toward better care.</p><span>© 2025 Carefinder</span></footer>
+</body>
+</html>

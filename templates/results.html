@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hospital results | Carefinder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/map.js') }}" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span></a>
+    <nav aria-label="Main navigation"><a href="{{ url_for('index') }}">Find a hospital</a><a href="{{ url_for('index') }}#featured">Featured hospitals</a></nav>
+    <a class="header-action" href="{{ url_for('index') }}#search">New search <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="results-main">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Home</a><span aria-hidden="true">/</span><span>Search results</span></div>
+    <section class="results-intro">
+      <p class="eyebrow">CHANDIGARH AND ZIRAKPUR DIRECTORY</p>
+      <h1>{% if specialty %}{{ specialty }} hospitals{% else %}Hospitals{% endif %}{% if city %} in {{ city }}{% else %} in Chandigarh and Zirakpur{% endif %}</h1>
+      <p>{{ result_count }} hospital{% if result_count != 1 %}s{% endif %} found{% if query %} for “{{ query }}”{% endif %}{% if emergency_only %} with 24/7 emergency care{% endif %}.</p>
+    </section>
+    <div class="results-layout">
+      <section class="results-list" aria-label="Hospital results">
+        {% if hospitals %}
+          {% for hospital in hospitals %}
+          <article class="result-card" data-lat="{{ hospital['latitude'] }}" data-lon="{{ hospital['longitude'] }}" data-name="{{ hospital['name'] }}" data-address="{{ hospital['address'] }}">
+            <div class="result-icon" aria-hidden="true">✚</div>
+            <div class="result-content">
+              <div class="result-title-row"><div><p class="card-city">{{ hospital["city"] }}</p><h2><a href="{{ url_for('hospital_detail', hospital_id=hospital['id']) }}">{{ hospital["name"] }}</a></h2></div>{% if hospital["rating"] > 0 %}<span class="rating"><span aria-hidden="true">★</span> {{ "%.1f"|format(hospital["rating"]) }}</span>{% endif %}</div>
+              <p class="result-address">{{ hospital["address"] }}</p>
+              {% if hospital["specialties"] %}<p class="card-specialties">{{ hospital["specialties"] }}</p>{% endif %}
+              <p class="hospital-description">Contact the hospital to confirm current services and availability.</p>
+              <div class="result-badges">{% if hospital["emergency"] %}<span class="badge badge-green">24/7 emergency</span>{% endif %}{% if hospital["distance_km"] is not none %}<span class="badge distance">{{ "%.1f"|format(hospital["distance_km"]) }} km away</span>{% endif %}</div>
+              <div class="result-actions"><a class="button button-small button-primary" href="{{ url_for('hospital_detail', hospital_id=hospital['id']) }}">View details</a><a class="text-link" target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/?mlat={{ hospital['latitude'] }}&mlon={{ hospital['longitude'] }}#map=15/{{ hospital['latitude'] }}/{{ hospital['longitude'] }}">Get directions <span aria-hidden="true">↗</span></a></div>
+            </div>
+          </article>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state"><span class="empty-icon" aria-hidden="true">⌕</span><h2>No hospitals found</h2><p>Try a different city, specialty, or keyword.</p><a class="button button-primary" href="{{ url_for('index') }}#search">Adjust your search</a></div>
+        {% endif %}
+      </section>
+      <aside class="map-panel" aria-label="Map of hospitals">
+        <div class="map-panel-heading"><div><p class="eyebrow">EXPLORE THE AREA</p><h2>Hospital map</h2></div><span class="map-pin" aria-hidden="true">⌖</span></div>
+        {% if hospitals %}<div id="hospital-map" role="application" aria-label="Interactive map showing hospital locations"></div><p class="map-caption">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a></p>{% else %}<div class="map-empty">Hospital locations will appear here when results are available.</div>{% endif %}
+      </aside>
+    </div>
+  </main>
+  <footer class="site-footer"><a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span></a><p>Helping you take the next step toward better care.</p><span>© 2025 Carefinder</span></footer>
+</body>
+</html>

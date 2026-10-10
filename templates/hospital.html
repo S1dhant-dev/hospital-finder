@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ hospital["name"] }} | Carefinder</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span></a>
+    <nav aria-label="Main navigation"><a href="{{ url_for('index') }}">Find a hospital</a><a href="{{ url_for('index') }}#featured">Featured hospitals</a></nav>
+    <a class="header-action" href="{{ url_for('search') }}">Browse hospitals <span aria-hidden="true">↗</span></a>
+  </header>
+  <main class="detail-main">
+    <div class="breadcrumb"><a href="{{ url_for('index') }}">Home</a><span aria-hidden="true">/</span><a href="{{ url_for('search', city=hospital['city']) }}">{{ hospital["city"] }}</a><span aria-hidden="true">/</span><span>Hospital details</span></div>
+    <section class="detail-hero">
+      <div class="detail-icon" aria-hidden="true">✚</div>
+      <div><p class="eyebrow">{{ hospital["city"] }} · HOSPITAL PROFILE</p><h1>{{ hospital["name"] }}</h1><p class="detail-address">{{ hospital["address"] }}</p></div>
+      {% if hospital["rating"] > 0 %}<span class="rating detail-rating"><span aria-hidden="true">★</span> {{ "%.1f"|format(hospital["rating"]) }} <small>rating</small></span>{% endif %}
+    </section>
+    <div class="detail-grid">
+      <section class="detail-card"><p class="eyebrow">ABOUT THIS HOSPITAL</p><h2>Hospital listing</h2><p>{{ hospital["name"] }} is listed at {{ hospital["address"] }}. The directory category is {{ hospital["specialties"]|lower }}. Contact the hospital to confirm current services and availability.</p><div class="detail-facts"><div><span class="fact-icon" aria-hidden="true">♡</span><span><strong>Listed services</strong><small>{{ hospital["specialties"] }}. Verify with the hospital.</small></span></div><div><span class="fact-icon" aria-hidden="true">◷</span><span><strong>Emergency care</strong><small>Contact hospital to confirm availability.</small></span></div><div><span class="fact-icon" aria-hidden="true">⌖</span><span><strong>Address</strong><small>{{ hospital["address"] }}</small></span></div></div></section>
+      <aside class="contact-card"><p class="eyebrow">GET IN TOUCH</p><h2>Plan your visit</h2><p>Phone details are not available in this directory. Please confirm contact information and services with the hospital.</p><a class="button button-primary button-full" target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/?mlat={{ hospital['latitude'] }}&mlon={{ hospital['longitude'] }}#map=15/{{ hospital['latitude'] }}/{{ hospital['longitude'] }}">Get directions ↗</a></aside>
+    </div>
+    <a class="back-link" href="{{ url_for('search', city=hospital['city']) }}">← See more hospitals in {{ hospital["city"] }}</a>
+  </main>
+  <footer class="site-footer"><a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">+</span><span>care<span class="brand-accent">finder</span></span></a><p>Helping you take the next step toward better care.</p><span>© 2025 Carefinder</span></footer>
+</body>
+</html>
